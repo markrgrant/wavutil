@@ -1,2 +1,0 @@
-file <- B.readFile "cannon.wav"
-parseOnly (fourccParser >> lengthParser >> riffDataParser) file
