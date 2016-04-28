@@ -1,28 +1,20 @@
 module WAV where
 
-
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Char8 as C
 import Data.Binary
+import qualified Data.ByteString as B
 import Data.Binary.Get
 import System.Environment
 
 
 type Length    = Int
-
 type FormType  = B.ByteString
-
 type FourCC    = B.ByteString
-
-data RIFF      = RIFF RIFFData
-
+data RIFF      = RIFF RIFFData deriving (Show)
 data RIFFData  = WaveRIFF   [WaveChunk]
-               | OtherRIFF  FormType
-
+               | OtherRIFF  FormType deriving (Show)
 data WaveChunk = FmtChunk   FmtInfo
                | DataChunk  B.ByteString
-               | OtherChunk FourCC B.ByteString deriving (Eq)
-
+               | OtherChunk FourCC B.ByteString deriving (Eq, Show)
 data FmtInfo   = FmtInfo16 {
                    wFormatTag :: FmtCode,
                    nChannels  :: Int,
@@ -30,47 +22,12 @@ data FmtInfo   = FmtInfo16 {
                    nAvgBytesPerSec :: Int,
                    nBlockAlign :: Int,
                    wBitsPerSample :: Int
-                 } deriving (Eq)
-
+                 } deriving (Eq, Show)
 data FmtCode   = PCM
                | IEEEFloat
                | ALAW
                | MULAW
-               | EXTENSIBLE deriving (Eq)
-
-
-instance Show FmtCode where
-  show PCM        = "pcm"
-  show IEEEFloat  = "IEEE float"
-  show ALAW       = "8-bit ITU-T G.711 A-law"
-  show MULAW      = "8-bit ITU-T G.711 mu-law"
-  show EXTENSIBLE = "determined by subformat"
-
-
-instance Show RIFF where
-  show (RIFF riffdata) =
-    "RIFF " ++ show riffdata
-
-
-instance Show RIFFData where
-  show (WaveRIFF wavechunks) = "WAV " ++ show wavechunks
-  show (OtherRIFF formtype) = "Other " ++ show formtype
-
-
-instance Show WaveChunk where
-  show (FmtChunk fmtinfo) = " fmt (" ++ show fmtinfo ++ ")"
-  show (DataChunk dat) = " data (length=" ++ show (B.length dat) ++ " bytes)"
-  show (OtherChunk fourcc dat) = " " ++ C.unpack fourcc ++ " (length=" ++ show (B.length dat) ++ " bytes)"
-
-
-instance Show FmtInfo where
-  show fi = "format=" ++ show (wFormatTag fi) ++
-            " # channels=" ++ show (nChannels fi) ++
-            " samples per sec=" ++ show (nSamplesPerSec fi) ++
-            " avg bytes per sec=" ++ show (nAvgBytesPerSec fi) ++
-            " data block size=" ++ show (nBlockAlign fi) ++ " bytes" ++
-            " bits per sample=" ++ show (wBitsPerSample fi)
-
+               | EXTENSIBLE deriving (Eq, Show)
 
 instance Binary RIFF where
   get = undefined

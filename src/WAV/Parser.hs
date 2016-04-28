@@ -5,7 +5,7 @@ import WAV
 import Prelude hiding             (take, count)
 import Data.Word                  (Word32, Word8)
 import Data.Attoparsec.ByteString (Parser, take, string, anyWord8,
-                                   manyTill, parse, Result, count, choice,
+                                   manyTill, parseOnly, Result, count, choice,
                                    many')
 import Data.Binary.Get            (runGet, getWord16le, getWord32le, getWord8)
 import Data.Binary.Put            (runPut, putWord32le)
@@ -14,10 +14,10 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L
 
 
-parseFromFile :: FilePath -> IO (Result RIFF)
+parseFromFile :: FilePath -> IO (Either String RIFF)
 parseFromFile fp =
   B.readFile fp >>= \contents -> 
-  return $ parse riffParser contents
+  return $ parseOnly riffParser contents
 
 
 riffParser :: Parser RIFF
@@ -25,7 +25,6 @@ riffParser = do
     _        <- fourccParser
     length   <- lengthParser
     riffdata <- riffDataParser
-    dat      <- take length
     return $ RIFF riffdata
 
 
