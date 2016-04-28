@@ -1,0 +1,35 @@
+name:                wavutil
+version:             0.1.0.0
+license-file:        LICENSE
+author:              Mark Grant
+maintainer:          markrgrant@yahoo.com
+build-type:          Simple
+cabal-version:       >=1.10
+
+library
+  exposed-modules:     WAV, WAV.Parser
+  hs-source-dirs:      src
+  build-depends:       base >=4.7 && <4.8,
+                       binary,
+                       cereal,
+                       attoparsec,
+                       bytestring
+  default-language:    Haskell2010
+
+executable wavinfo
+  main-is:             WAVInfo.hs
+  hs-source-dirs:      src
+  build-depends:       base >=4.7 && <4.8,
+                       bytestring >=0.10 && <0.11,
+                       binary >=0.7 && <0.8,
+                       attoparsec >=0.12 && <0.13
+
+test-suite testwavparser
+  type:                exitcode-stdio-1.0
+  main-is:             Main.hs
+  hs-source-dirs:      test
+  build-depends:       base >=4.7 && <4.8,
+                       wavutil,
+                       bytestring,
+                       binary >=0.7 && <0.8,
+                       attoparsec>=0.12 && <0.13
